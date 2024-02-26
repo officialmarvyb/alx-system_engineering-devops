@@ -1,0 +1,12 @@
+# ~/.ssh/config
+# A configuration file for
+
+Host * #54.84.216.34
+  HostName 54.84.216.34 #This is the server hostname
+  User ubuntu  # This is the server username
+  SendEnv LANG LC_*
+  HashKnownHosts yes
+  GSSAPIAuthentication yes
+  GSSAPIDelegateCredentials no
+  IdentityFile ~/.ssh/alxkey
+  PasswordAuthentication no # This set the passphrase auth to none

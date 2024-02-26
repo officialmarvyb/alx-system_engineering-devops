@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# This is a bash script that create an RSA key
+# using a key and a passphrase ('betty')
+
+# set the filename for the key
+private_key_file="school"
+
+# set the numbe of bits for key
+key_bits=4096
+
+# set the passphrase
+passphrase="betty"
+
+# command to generate the RSA key
+ssh-keygen -t rsa -b $key_bits -f "$private_key_file" -N "$passphrase"
