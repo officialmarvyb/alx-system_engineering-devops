@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Installs Nginx on server and creates a custom html file
+
+
+# Update the package index
+sudo apt-get update
+
+# Install Nginx
+sudo apt-get install -y nginx
+
+# Create a custom HTML file with content "Hello World!"
+echo "Hello World!" | sudo tee /var/www/html/index.nginx-debian.html
+
+# Start Nginx
+
+sudo service nginx start
