@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+# Install software properties common
+#apt-get -y install software-properties-common
+
+# Add HAProxy repository
+#add-apt-repository -y ppa:vbernat/haproxy-2.0
+apt-get install -y software-properties-common
+add-apt-repository -y ppa:vbernat/haproxy-2.0
+# Update package repositories
+apt-get -y update
+
+# Install HAProxy version 2.0
+#apt-get -y install haproxy #=2.0.*
+apt-get install -y haproxy=2.0.\*
+
+sudo cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.orig
+
+# Add student ID
+STUDENT_ID=190195
+SERVER1_IP='54.157.134.178:80'
+SERVER2_IP='334.229.161.255:80'
+# Configure HAProxy
+cat <<EOF >> /etc/haproxy/haproxy.cfg
+frontend http
+    bind *:80
+    mode http
+    default_backend web-backend
+
+backend web-backend
+    balance roundrobin
+    server ${STUDENT_ID}-web-01 $SERVER1_IP check
+    server ${STUDENT_ID}-web-02 $SERVER2_IP check
+EOF
+
+# Restart HAProxy service
+service haproxy restart
+
+#!/usr/bin/env bash
+# Installs and configures HAProxy
+
+sudo apt-get install -y software-properties-common
+sudo add-apt-repository -y ppa:vbernat/haproxy-2.0
+sudo apt-get -y update
+sudo apt-get install -y haproxy=2.0.\*
+
+# Enabling init script
+echo "ENABLED=1" | sudo tee /etc/default/haproxy
+
+# Creating a copy of HAProxy's config file
+
+# configuring to load balance web1 and web2 servers
+echo "
+	frontend myfrontend
+		bind *:80
+		option httpclose
+		option httplog
+		option forwardfor
+		default_backend mybackend
+	backend mybackend
+		mode http
+		balance roundrobin
+		server 190195-web-01 54.157.134.178:80 check
+		server 190195-web-02 34.229.161.255:80 check
+" | sudo tee /etc/haproxy/haproxy.cfg
+
+sudo service haproxy start

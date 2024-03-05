@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Install Nginx
+sudo apt-get -y update
+sudo apt-get -y install nginx
+
+# Start Nginx Service
+sudo service nginx start
+
+# Modify the Nginx configuration to use the custom 404 page
+sudo sed -i "24i \\\tadd_header X-Served-By $(hostname);" /etc/nginx/sites-available/default
+
+# Restart Nginx service to apply changes
+sudo service nginx restart
