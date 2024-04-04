@@ -18,8 +18,8 @@ sudo cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.orig
 
 # Add student ID
 STUDENT_ID=190195
-SERVER1_IP='54.157.134.178:80'
-SERVER2_IP='334.229.161.255:80'
+SERVER1_IP='35.153.67.107:80'
+SERVER2_IP='54.157.152.41'
 # Configure HAProxy
 cat <<EOF >> /etc/haproxy/haproxy.cfg
 frontend http
@@ -60,8 +60,8 @@ echo "
 	backend mybackend
 		mode http
 		balance roundrobin
-		server 190195-web-01 54.157.134.178:80 check
-		server 190195-web-02 34.229.161.255:80 check
+		server 190195-web-01 35.153.67.107:80 check
+		server 190195-web-02 54.157.152.41:80 check
 " | sudo tee /etc/haproxy/haproxy.cfg
 
 sudo service haproxy start
