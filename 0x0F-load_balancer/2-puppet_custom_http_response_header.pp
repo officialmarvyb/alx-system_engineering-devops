@@ -1,47 +1,30 @@
-# Define Nginx class
-class { 'nginx':
-  manage_repo    => true,
-  service_ensure => 'running',
-  service_enable => true,
+# Setup New Ubuntu server with nginx
+# and add a custom HTTP header
+
+exec { 'update system':
+        command => '/usr/bin/apt-get update',
 }
 
-# Create custom 404 page
-file { '/usr/share/nginx/html/custom_404.html':
-  ensure  => file,
-  content => "Ceci n'est pas une page\n",
+package { 'nginx':
+	ensure => 'installed',
+	require => Exec['update system']
 }
 
-# Configure Nginx to use custom 404 page and add custom HTTP response header
-file { '/etc/nginx/sites-available/default':
-  ensure  => file,
-  content => "
-    server {
-      listen 80 default_server;
-      listen [::]:80 default_server;
-      root /usr/share/nginx/html;
-      index index.html;
-      server_name _;
-
-      location / {
-        try_files \$uri \$uri/ =404;
-        add_header X-Served-By \$hostname;
-      }
-      error_page 404 /custom_404.html;
-      location = /custom_404.html {
-        internal;
-      }
-
-      location /redirect_me {
-        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
-      }
-    }
-  ",
-  require => Class['nginx'],
+file {'/var/www/html/index.html':
+	content => 'Hello World!'
 }
 
-# Restart Nginx service to apply changes
-service { 'nginx':
-  ensure  => running,
-  enable  => true,
-  require => File['/etc/nginx/sites-available/default'],
+exec {'redirect_me':
+	command => 'sed -i "24i\	rewrite ^/redirect_me https://th3-gr00t.tk/ permanent;" /etc/nginx/sites-available/default',
+	provider => 'shell'
+}
+
+exec {'HTTP header':
+	command => 'sed -i "25i\	add_header X-Served-By \$hostname;" /etc/nginx/sites-available/default',
+	provider => 'shell'
+}
+
+service {'nginx':
+	ensure => running,
+	require => Package['nginx']
 }
